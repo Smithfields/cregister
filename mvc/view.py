@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, send_file, request, jsonify, flash
 from dicttoxml import dicttoxml # used to parse dictionary for REST XML rendering
 
-from src.wrapper import *
+from conf.wrapper import *
 
 from conf import config as cfg, utilities as util
 from mvc import controller as ctrl

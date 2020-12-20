@@ -4,7 +4,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 from mvc.model import *
-from src.wrapper import *
+from conf.wrapper import *
 
 from conf import config as cfg
 

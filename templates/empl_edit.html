@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Employee</title>
+</head>
+<body>
+<h1>Edit Employee</h1>
+    <form method="POST" action="/employee/edit/{{ id }}">
+        <label for="id">id (locked)</label>
+            <input type="number" name="id" value="{{ id }}" disabled><br>
+        <label for="f_name">First Name: </label>
+            <input type="text" name="f_name" value="{{ f_name }}"><br>
+        <label for="l_name">Last Name: </label>
+            <input type="text" name="l_name" value="{{ l_name }}"><br>
+        <label for="email">email: </label>
+            <input type="text" name="email" value="{{ email }}"><br>
+
+        <input type="submit" value="Submit"><br>
+    </form>
+</body>
+</html>

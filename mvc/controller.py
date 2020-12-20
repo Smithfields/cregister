@@ -224,9 +224,8 @@ def make_receipt_pdf(receipt_array):
     #storing canvas in a buffer to return it as a file
     buffer = io.BytesIO()
     c = Canvas(buffer, pagesize=(88*mm, 200*mm))
-    pdfmetrics.registerFont(TTFont('Courier New', 'Courier New.ttf')) # monospaced font
-    c.setFont('Courier New', 11)
-    #c = canvas.Canvas(buffer, pagesize=letter)
+    #pdfmetrics.registerFont(TTFont('Courier New', 'Courier New.ttf')) # monospaced font
+    #c.setFont('Courier New', 11)
     textobject = c.beginText()
     textobject.setTextOrigin(10, 540)
     for line in receipt_array:

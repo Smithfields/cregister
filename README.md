@@ -1,9 +1,14 @@
+
 Bonjour, nous nous étions entendu durant le cours. Et ainsi, au lieu de faire une interface graphique, je me suis employé à rendre l'application REST Compliant avec la librarie Flask
-#Cash Register Python App
-###partial REST application, Object Oriented and MVC compliant
-Original sources were translated into object oriented code and completely adapted for this different approach.
+
+# Cash Register Python App
+### partial REST application, Object Oriented and MVC compliant
+Original source files were translated into object oriented code and completely adapted for this different approach. DB layer was also totally changed. 
+
 Among the changes, the app now supports DB request for potentially non-existing ID. Newly created rows also return their ID, which is useful to initialize other object (Purchase_Detail). Some static methods were also added to ease with DB digging. 
+
 I wanted to do REST but I also wanted the app not to request a REST client, so where so method could be pure GET/POST/PUT I switched for a GET/POST + html form approach. However 'menu/all' and 'employee/all' can return both XML or JSON.  
+
 Errors and messages are logged rather than print. Each Database operation is logged as 'DEBUG'
 
 Most static variables are located in the conf/config.py script (non-template forms, sql query, time format, database path, etc. )

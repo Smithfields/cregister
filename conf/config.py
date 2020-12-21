@@ -13,6 +13,8 @@ SENDFILE_PDF = 'application/pdf'
 COMPANY_ADDRESS = {'name': 'ABC inc.', 'street': 'Waterloo street', 'number': 1, 'city': 'Brussels', 'zip': 1000, 'vat_number': 'BE 0123 456 789', 'vat': 6.0}
 DFLT_FILENAME = 'receipt_{0}.pdf'
 
+PDF_LINE_HEIGHT = 8
+
 # GLOBAL CONST
 QRY_EMPL_SLCT = 'SELECT id, first_name,family_name,email_address FROM employee WHERE id=?'
 QRY_EMPL_SLCTA = 'SELECT * FROM employee'

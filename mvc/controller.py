@@ -1,7 +1,7 @@
-from reportlab.pdfgen.canvas import Canvas
-from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.units import mm
 
 from mvc.model import *
 from conf.wrapper import *
@@ -173,7 +173,88 @@ def do_total_purchase(p, e):
 ########################################################################################################################
 # RECEIPT SECTION ######################################################################################################
 ########################################################################################################################
-def prepare_receipt_data(id):
+def prepare_receipt_data_mono(id):
+    logging.info('Controller — RECEIPT::: INIT RECEIPT MONO')
+    ds = SqliteWrapper(DB_PATH)
+    ds.initiate_connection()
+    p = Purchase(ds).find(id)
+
+    if not p:
+        return False
+
+    table = []
+
+    table.append(cfg.COMPANY_ADDRESS['name'])
+    table.append(cfg.COMPANY_ADDRESS['street'] + ', ' + str(cfg.COMPANY_ADDRESS['number']))
+    table.append(str(cfg.COMPANY_ADDRESS['zip']) + ' ' + cfg.COMPANY_ADDRESS['city'])
+    table.append('')
+    table.append('Purchase number: ' + str(p.id))
+    table.append('Employee: ' + str(p.employee.f_name) + ' ' + str(p.employee.l_name))
+    table.append('')
+
+    total = 0.0
+    for menu in p.menu_list:
+        table.append('{0:5}: {1:21}{2:>6.2f}€'.format('Menu', menu.descr, menu.price_archive))
+        total += menu.price_archive
+
+    table.append('-----------------------------------')
+
+    vatval = (total * cfg.COMPANY_ADDRESS['vat']) / 100
+    vattotal = vatval + total
+
+    table.append('{0:8}{1:>9}{2:^9}{3:>9}'.format('', 'excl. VAT', 'VAT', 'incl. VAT'))
+    table.append('{0:8}{1:>9.2f}{2:^9.2f}{3:>8.2f}'.format('VAT ' + str(cfg.COMPANY_ADDRESS['vat']) + '%', total, vatval, vattotal))
+    table.append('-----------------------------------')
+    table.append('{0:27}{1:>7.2f}€'.format('TOTAL', vattotal))
+    table.append('Date: ' + p.date)
+    table.append('VAT Number: ' + cfg.COMPANY_ADDRESS['vat_number'])
+    table.append('')
+    table.append('Another happy client served ^_^')
+
+    return table
+
+
+def make_receipt_cnsl(receipt_array):
+    logging.info('Controller — RECEIPT::: PRINT RECEIPT CONSOLE')
+    for line in receipt_array:
+        print(line)
+    return True
+
+
+def make_receipt_pdf(receipt_array):
+    logging.info('Controller — RECEIPT::: PRINT RECEIPT PDF')
+    #storing canvas in a buffer to return it as a file
+    buffer = io.BytesIO()
+    c_height = 100
+
+    # for each line beyond the 15th, adding 8mm
+    extra_line = len(receipt_array) - 15
+    if extra_line > 0:
+        c_height += extra_line * cfg.PDF_LINE_HEIGHT
+
+    c = Canvas(buffer, pagesize=(88*mm, c_height*mm))
+    pdfmetrics.registerFont(TTFont('Courier New', 'Courier New.ttf')) # monospaced font for alignment
+    c.setFont('Courier New', 11)
+    text_object = c.beginText()
+    text_object.setTextOrigin(10, 270 + (extra_line * 20)) # origin changes with canvas' height # TODO: Clean this
+
+    for line in receipt_array:
+        text_object.textLine(line)
+        text_object.moveCursor(0, 3)
+
+    c.drawText(text_object)
+
+    c.showPage()
+    c.save()
+
+    #reset the buffer cusor's position to 0
+    buffer.seek(io.SEEK_SET)
+    return buffer
+
+
+"""
+#DEPREC!!!
+def prepare_receipt_data_DEPREC(id):
     logging.info('Controller — RECEIPT::: INIT RECEIPT')
     ds = SqliteWrapper(DB_PATH)
     ds.initiate_connection()
@@ -210,32 +291,4 @@ def prepare_receipt_data(id):
     table.append('VAT Number: ' + cfg.COMPANY_ADDRESS['vat_number'])
 
     return table
-
-
-def make_receipt_cnsl(receipt_array):
-    logging.info('Controller — RECEIPT::: PRINT RECEIPT CONSOLE')
-    for line in receipt_array:
-        print(line)
-        return True
-
-
-def make_receipt_pdf(receipt_array):
-    logging.info('Controller — RECEIPT::: PRINT RECEIPT PDF')
-    #storing canvas in a buffer to return it as a file
-    buffer = io.BytesIO()
-    c = Canvas(buffer, pagesize=(88*mm, 200*mm))
-    #pdfmetrics.registerFont(TTFont('Courier New', 'Courier New.ttf')) # monospaced font
-    #c.setFont('Courier New', 11)
-    textobject = c.beginText()
-    textobject.setTextOrigin(10, 540)
-    for line in receipt_array:
-        textobject.textLine(line)
-        textobject.moveCursor(0, 3)
-
-    c.drawText(textobject)
-
-    c.showPage()
-    c.save()
-    #reset the buffer cusor's position to 0
-    buffer.seek(io.SEEK_SET)
-    return buffer
+"""

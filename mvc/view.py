@@ -13,7 +13,6 @@ logging.getLogger('dicttoxml').setLevel(logging.ERROR) # silencing 'dicttoxml' w
 simple_page = Blueprint('simple_page', __name__, template_folder='templates')
 
 
-
 @simple_page.route('/employee/look', methods=['GET', 'POST'])
 def view_employee_form():
     if request.method == 'POST':  # this block is only entered when the form is submitted
@@ -213,7 +212,7 @@ def view_get_receipt(id):
     if id is None:  # reset page with flash message if check fails
         return cfg.ERROR_MSG_PARAM
 
-    data_list = ctrl.prepare_receipt_data(id)
+    data_list = ctrl.prepare_receipt_data_mono(id)
     if not data_list:
         return cfg.ERROR_MSG_DB + ' > ' + htescape(str(id))
 

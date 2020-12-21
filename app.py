@@ -3,7 +3,7 @@ from mvc.view import simple_page
 
 app = Flask(__name__)
 app.secret_key = 'no secret' # necessary to access session necessary to access flash scope
-app.register_blueprint(simple_page)
+app.register_blueprint(simple_page) # see mvc.view
 
 
 @app.route('/')
